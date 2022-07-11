@@ -84,6 +84,7 @@ pub struct Parser {
     args: Vec<Vec<char>>,
     index: usize,
     point: usize,
+    pub loose: Vec<String>,
 }
 
 impl Parser {
@@ -128,6 +129,7 @@ impl Parser {
             args: args.iter().map(|e| e.chars().collect()).collect(),
             index: 1,
             point: 0,
+            loose: vec![],
         }
     }
 
@@ -254,10 +256,17 @@ impl Iterator for Parser {
              */
             if self.index >= self.args.len()
                 || self.args[self.index].is_empty()
-                || self.args[self.index][0] != '-'
                 || self.args[self.index].len() == 1
             {
                 return None;
+            }
+
+            if self.args[self.index][0] != '-' {
+                let s: String = self.args[self.index].iter().collect();
+                self.incr_index();
+                self.loose.push(s);
+
+                return Some(Ok(Opt('*', None)));
             }
 
             /*
@@ -267,6 +276,9 @@ impl Iterator for Parser {
              */
             if self.args[self.index][1] == '-' && self.args[self.index].len() == 2 {
                 self.incr_index();
+                for v in &self.args[self.index..] {
+                    self.loose.push(v.iter().collect());
+                }
                 return None;
             }
 
