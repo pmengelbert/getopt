@@ -1,3 +1,5 @@
+This is a fork of [getopt](https://git.dragonma.us/rust/getopt) and you should be using that repository.
+
 # getopt
 
 A minimal, (essentially) POSIX-compliant option parser.
